@@ -1,57 +1,85 @@
+import { useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
+  const [maze, setMaze] = useState([
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+  ]);
+
+  const front = [
+    [0, 1],
+    [1, 0],
+    [0, -1],
+    [-1, 0],
+  ];
+
+  const mazeGeneration = () => {
+    for (let x = 0; x < maze.length; x++) {
+      for (let y = 0; y < maze[x].length; y++) {
+        if (x % 2 === 1 && y % 2 === 1) {
+          const updatedMaze = [...maze];
+          updatedMaze[x][y] = 1;
+          setMaze(updatedMaze);
+          console.table(maze);
+        }
+      }
+    }
+
+    const startCells = [];
+    for (let i = 0; i < maze.length; i++) {
+      for (let j = 0; j < maze[i].length; j++) {
+        if (maze[i][j] === 1) {
+          startCells.push([i, j]);
+        }
+      }
+    }
+    const randomStartCell = startCells[Math.floor(Math.random() * startCells.length)];
+    const randomDirection = front[Math.floor(Math.random() * front.length)];
+
+    // 選んだセルの周囲のセルを計算
+    const x = randomStartCell[0] + randomDirection[0];
+    const y = randomStartCell[1] + randomDirection[1];
+
+    // そのセルが範囲内であれば、そのセルの値を1に変更
+    if (x >= 0 && x < maze.length && y >= 0 && y < maze[0].length) {
+      const newMaze = [...maze];
+      newMaze[x][y] = 1;
+      setMaze(newMaze);
+    }
+  };
+
+  // const generation = () => {
+  //   for (let x = 0; x < maze.length; x++) {
+  //     for (let y = 0; y < maze[x].length; y++) {
+  //       if (x % 2 === 1 && y % 2 === 1) {
+  //         const updatedMaze = [...maze];
+  //         updatedMaze[x][y] = 1;
+  //         setMaze(updatedMaze);
+  //         console.table(maze);
+  //       }
+  //     }
+  //   }
+  // };
+
   return (
     <div className={styles.container}>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+      {['生成'].map((v) => (
+        <li onClick={mazeGeneration} key={v}>
+          {v}
+        </li>
+      ))}
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code} style={{ backgroundColor: '#fafafa' }}>
-            pages/index.js
-          </code>
-        </p>
-
-        <div className={styles.grid}>
-          <a className={styles.card} href="https://nextjs.org/docs">
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a className={styles.card} href="https://nextjs.org/learn">
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a className={styles.card} href="https://github.com/vercel/next.js/tree/master/examples">
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            className={styles.card}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>Instantly deploy your Next.js site to a public URL with Vercel.</p>
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <img src="vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+      <div className={styles.maze}>
+        {maze.map((row, x) =>
+          row.map((cell, y) => (
+            <div className={styles.cell} key={`${x}-${y}`}>
+              {cell === 1 && <div className={styles.pillar} />}
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 };

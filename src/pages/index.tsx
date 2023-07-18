@@ -13,7 +13,7 @@ const Home = () => {
   const [human, setHuman] = useState({
     x: 0,
     y: 0,
-    front: [0, -1],
+    front: [1, 0],
   });
 
   const front = [
@@ -71,7 +71,7 @@ const Home = () => {
     const newX = x + front[1];
     const newY = y - front[0];
 
-    setHuman({ x: newX, y: newY, front: [-1, 0] });
+    setHuman({ x: newX, y: newY, front: [1, 0] });
   };
 
   const downMove = () => {
@@ -79,7 +79,7 @@ const Home = () => {
     const newX = x + front[0];
     const newY = y + front[1];
 
-    setHuman({ x: newX, y: newY, front: [0, -1] });
+    setHuman({ x: newX, y: newY, front: [1, 0] });
   };
 
   const rightRotation = () => {
@@ -110,6 +110,7 @@ const Home = () => {
       maze[leftHandX][leftHandY] === 0
     ) {
       leftMove();
+      console.log('leftMove');
     }
     // 左手が壁で前が空いている場合
     else if (
@@ -121,10 +122,12 @@ const Home = () => {
       maze[frontX][frontY] === 0
     ) {
       downMove();
+      console.log('downMove');
     }
     // 左手が壁でかつ前も壁の場合
     else {
       rightRotation();
+      console.log('rightRotation');
     }
     console.log(human);
   };

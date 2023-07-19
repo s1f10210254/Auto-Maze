@@ -32,23 +32,27 @@
   background-color: rgb(1 3 6);
 }
 
-.button {
-  background-color: rgb(141 110 49);
-  color: rgb(12 11 11);
-  border-radius: 0.4rem;
-  cursor: pointer;
-}
-
-.human {
-  background-color: rgb(141 110 49);
-  color: rgb(12 11 11);
-  border-radius: 0.4rem;
-  cursor: pointer;
-}
-
 .position {
   width: 80%;
   height: 80%;
   background-color: rgb(199 25 25);
   background-position: center;
+}
+
+.top {
+  display: flex;
+}
+
+.generationbu {
+  background-color: rgb(141 110 49);
+  color: rgb(12 11 11);
+  border-radius: 0.4rem;
+  cursor: pointer;
+}
+
+.humanbu {
+  background-color: rgb(141 110 49);
+  color: rgb(12 11 11);
+  border-radius: 0.4rem;
+  cursor: pointer;
 }

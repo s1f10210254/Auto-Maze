@@ -134,13 +134,14 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      <button className={styles.button} onClick={generation}>
-        生成
-      </button>
-      <button className={styles.human} onClick={moveHuman}>
-        探索
-      </button>
-
+      <div className={styles.top}>
+        <button className={styles.generationbu} onClick={generation}>
+          生成
+        </button>
+        <button className={styles.humanbu} onClick={moveHuman}>
+          探索
+        </button>
+      </div>
       <div className={styles.maze}>
         {maze.map((row, x) =>
           row.map((cell, y) => (

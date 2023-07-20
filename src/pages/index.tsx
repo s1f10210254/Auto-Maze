@@ -11,8 +11,8 @@ const Home = () => {
   ]);
 
   const [human, setHuman] = useState({
-    x: 0,
-    y: 0,
+    x: 4,
+    y: 4,
     front: [1, 0],
   });
 
@@ -30,9 +30,9 @@ const Home = () => {
     for (let x = 0; x < maze.length; x++) {
       for (let y = 0; y < maze[x].length; y++) {
         if (x % 2 === 1 && y % 2 === 1) {
-          startCells.push([x, y]);
+          startCells.push([y, x]);
           const updatedMaze = [...maze];
-          updatedMaze[x][y] = 1;
+          updatedMaze[y][x] = 1;
           setMaze(updatedMaze);
         }
       }
@@ -46,88 +46,91 @@ const Home = () => {
     const startCells = mazeGeneration_Odd();
     const updatedMaze = [...maze];
     for (const startCell of startCells) {
-      const [x, y] = startCell;
+      const [y, x] = startCell;
 
       // ランダムな方向を選択
       const randomDirectionIndex = Math.floor(Math.random() * 4);
       const randomDirection = front[randomDirectionIndex];
-      const [dx, dy] = randomDirection;
+      const [dy, dx] = randomDirection;
 
       // 選択した方向のセルが迷路の範囲内であれば、そのセルの値を1に変更
       const newX = x + dx;
       const newY = y + dy;
       if (newX >= 0 && newX < maze.length && newY >= 0 && newY < maze[0].length) {
-        updatedMaze[newX][newY] = 1;
+        updatedMaze[newY][newX] = 1;
       }
     }
 
     setMaze(updatedMaze);
     console.log('迷路盤↓');
     console.table(maze);
+    console.log('front');
+    console.log(human);
   };
 
   const leftMove = () => {
     const { x, y, front } = human;
-    const newX = x + front[1];
-    const newY = y - front[0];
-
-    setHuman({ x: newX, y: newY, front: [1, 0] });
+    // const newFront = [front[0] - 1, front[1] - 1];
+    // setHuman((prevHuman) => ({
+    //   ...prevHuman,
+    //   front: newFront,
+    // }));
+    const nextX = x + front[0];
+    const nextY = y + front[1];
+    setHuman((prevHuman) => ({
+      ...prevHuman,
+      x: nextX,
+      y: nextY,
+    }));
   };
 
-  const downMove = () => {
+  // const downMove = () => {
+  //   const { x, y, front } = human;
+  //   const nextX = x + front[0];
+  //   const nextY = y + front[1];
+
+  //   setHuman((prevHuman) => ({
+  //     ...prevHuman,
+  //     x: nextX,
+  //     y: nextY,
+  //   }));
+  // };
+
+  // const rightRotation = () => {
+  //   const { front } = human;
+  //   const newFront = [front[0] + 1, front[1] + 1];
+
+  //   setHuman((prevHuman) => ({
+  //     ...prevHuman,
+  //     front: newFront,
+  //   }));
+  // };
+
+  const moveHuman = () => {
     const { x, y, front } = human;
-    const newX = x + front[0];
-    const newY = y + front[1];
-
-    setHuman({ x: newX, y: newY, front: [1, 0] });
-  };
-
-  const rightRotation = () => {
-    const { front } = human;
-    const newFront = [front[1], -front[0]];
-
+    const newFront = [front[0] - 1, front[1] - 1];
     setHuman((prevHuman) => ({
       ...prevHuman,
       front: newFront,
     }));
-  };
-
-  const moveHuman = () => {
-    const { x, y, front } = human;
-
-    // 左手、前方の座標を計算
-    const leftHandX = x + front[1];
-    const leftHandY = y - front[0];
-    const frontX = x + front[0];
-    const frontY = y + front[1];
-
-    // 左手が壁でない場合
+    const nextX = x + front[1];
+    const nextY = y + front[0];
+    console.log('newFront', newFront);
+    console.log('人間の次のX座標', nextX, '人間の次のY座標', nextY);
+    const setFront = [front[1], front[0]];
+    setHuman((prevHuman) => ({
+      ...prevHuman,
+      front: setFront,
+    }));
     if (
-      leftHandX >= 0 &&
-      leftHandX < maze.length &&
-      leftHandY >= 0 &&
-      leftHandY < maze[0].length &&
-      maze[leftHandX][leftHandY] === 0
+      nextX >= 0 &&
+      nextX < maze.length &&
+      nextY >= 0 &&
+      nextY < maze[0].length &&
+      maze[nextY][nextX] === 0
     ) {
       leftMove();
-      console.log('leftMove');
-    }
-    // 左手が壁で前が空いている場合
-    else if (
-      maze[x][y] === 0 &&
-      frontX >= 0 &&
-      frontX < maze.length &&
-      frontY >= 0 &&
-      frontY < maze[0].length &&
-      maze[frontX][frontY] === 0
-    ) {
-      downMove();
-      console.log('downMove');
-    }
-    // 左手が壁でかつ前も壁の場合
-    else {
-      rightRotation();
-      console.log('rightRotation');
+      console.log('leftMove実行');
     }
     console.log(human);
   };

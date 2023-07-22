@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
-  const [maze, setMaze] = useState([
+  const [maze, setMaze] = useState<number[][]>([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -19,15 +19,16 @@ const Home = () => {
   const [human, setHuman] = useState({
     x: 0,
     y: 0,
-    front: [-1, 0],
+    //初期値下向き
+    front: [1, 0],
   });
 
   const directions = [
     //上右下左
-    [0, 1],
-    [1, 0],
-    [0, -1],
-    [-1, 0],
+    [0, 1], //下
+    [1, 0], //右
+    [0, -1], //上
+    [-1, 0], //左
   ];
 
   const mazeGeneration_Odd = () => {
@@ -74,27 +75,28 @@ const Home = () => {
     console.log(human);
   };
 
-  const leftMove = () => {
+  const LeftMove = () => {
     const { x, y, front } = human;
     const [dx, dy] = front;
 
     // 現在の向きを左に90度変更
-    const newFront = [dy, -dx];
+    // 左に行く座標を計算
+    let newFront: number[] = [0, 0];
+    if (dx === 1) {
+      newFront = [dy, dx];
+    } else if (dy === 1) {
+      newFront = [-dy, dx];
+    } else if (dx === -1) {
+      newFront = [dy, dx];
+    } else if (dy === -1) {
+      newFront = [-dy, dx];
+    }
 
     // 新しい座標を計算
     const nextX = x + newFront[0];
     const nextY = y + newFront[1];
 
-    // 新しい座標が迷路の範囲内であり、かつ壁がない場合は前進
-    if (
-      nextX >= 0 &&
-      nextX < maze.length &&
-      nextY >= 0 &&
-      nextY < maze[0].length &&
-      maze[nextY][nextX] !== 1
-    ) {
-      setHuman({ x: nextX, y: nextY, front: newFront });
-    }
+    setHuman({ x: nextX, y: nextY, front: newFront });
   };
 
   const goMove = () => {
@@ -105,24 +107,25 @@ const Home = () => {
     const nextX = x + dx;
     const nextY = y + dy;
 
-    // 新しい座標が迷路の範囲内であり、かつ壁がない場合は前進
-    if (
-      nextX >= 0 &&
-      nextX < maze.length &&
-      nextY >= 0 &&
-      nextY < maze[0].length &&
-      maze[nextY][nextX] !== 1
-    ) {
-      setHuman({ ...human, x: nextX, y: nextY });
-    }
+    setHuman({ ...human, x: nextX, y: nextY });
   };
 
-  const turnleft = () => {
+  const turnright = () => {
     const { front } = human;
     const [dx, dy] = front;
 
     // 現在の向きを右に90度変更
-    const newFront = [dy, -dx];
+    let newFront: number[] = [0, 0];
+    if (dy === -1) {
+      newFront = [dy, dx];
+    } else if (dx === -1) {
+      newFront = [dy, -dx];
+    } else if (dy === 1) {
+      newFront = [dy, dx];
+    } else if (dx === 1) {
+      newFront = [dy, -dx];
+    }
+
     setHuman({ ...human, front: newFront });
   };
 
@@ -130,43 +133,69 @@ const Home = () => {
     const { x, y, front } = human;
     const [dx, dy] = front;
 
-    // 左手が壁でない場合は左に回る
-    // const leftX = x - dy;
-    // const leftY = y + dx;
-    const leftX = x + dy;
-    const leftY = y - dx;
+    // 左に行く座標を計算
+    let newFront: number[] = [0, 0];
+    if (dx === 1) {
+      newFront = [dy, dx];
+    } else if (dy === 1) {
+      newFront = [-dy, dx];
+    } else if (dx === -1) {
+      newFront = [dy, dx];
+    } else if (dy === -1) {
+      newFront = [-dy, dx];
+    }
+
+    // const newFront = [dy >= 0 ? -dy : dy, dx];
+    const leftX = x + newFront[0];
+    const leftY = y + newFront[1];
+    // 前に行く座標
+    const goX = x + dx;
+    const goY = y + dy;
     if (
       leftX >= 0 &&
       leftX < maze.length &&
       leftY >= 0 &&
       leftY < maze[0].length &&
-      maze[leftY][leftX] === 1
+      maze[leftX][leftY] === 0
     ) {
-      leftMove();
+      LeftMove();
       console.log('leftmove実行');
     }
     // 前が壁でない場合は前に進む
     else if (
-      x + dx >= 0 &&
-      x + dx < maze.length &&
-      y + dy >= 0 &&
-      y + dy < maze[0].length &&
-      maze[y + dy][x + dx] !== 1
+      goX >= 0 &&
+      goX < maze.length &&
+      goY >= 0 &&
+      goY < maze[0].length &&
+      maze[goX][goY] === 0
     ) {
       goMove();
       console.log('goMove実行');
     }
     // どちらも壁の場合は右に回る
     else {
-      turnleft();
-      console.log('turnleft実行');
+      turnright();
+      console.log('turnright実行');
     }
   };
+  console.log('human', human);
 
   // 矢印の向きを計算する関数
   const getArrowRotation = (dx: number, dy: number): number => {
-    const angle = Math.atan2(dy, dx);
-    return (angle * 180) / Math.PI;
+    if (dx === 1 && dy === 0) {
+      // 下向き
+      return 270;
+    } else if (dx === 0 && dy === -1) {
+      // 左向き
+      return 0;
+    } else if (dx === -1 && dy === 0) {
+      // 上向き
+      return 90;
+    } else if (dx === 0 && dy === 1) {
+      // 右向き
+      return 180;
+    }
+    return 0;
   };
 
   return (

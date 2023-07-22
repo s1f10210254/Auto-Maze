@@ -14,8 +14,8 @@
   height: 270px;
   background-color: rgb(131 218 56);
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  grid-template-rows: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  grid-template-rows: repeat(9, minmax(0, 1fr));
 }
 
 .cell {
@@ -37,6 +37,14 @@
   height: 80%;
   background-color: rgb(199 25 25);
   background-position: center;
+}
+
+.arrow {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 16px solid red; /* 矢印の色はここを調整 */
 }
 
 .top {

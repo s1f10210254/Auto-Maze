@@ -10,8 +10,8 @@
 
 .maze {
   position: relative;
-  width: 270px;
-  height: 270px;
+  width: 700px;
+  height: 700px;
   background-color: rgb(131 218 56);
   display: grid;
   grid-template-columns: repeat(9, minmax(0, 1fr));
@@ -57,14 +57,18 @@
 }
 
 .generationbu {
-  background-color: rgb(141 110 49);
+  width: 300px;
+  height: 50px;
+  background-color: rgb(224 188 236);
   color: rgb(12 11 11);
   border-radius: 0.4rem;
   cursor: pointer;
 }
 
 .humanbu {
-  background-color: rgb(141 110 49);
+  width: 300px;
+  height: 50px;
+  background-color: rgb(224 188 236);
   color: rgb(12 11 11);
   border-radius: 0.4rem;
   cursor: pointer;

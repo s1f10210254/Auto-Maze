@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
-  const [maze, setMaze] = useState<number[][]>([
+  const initialMaze = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -12,7 +12,9 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]);
+  ];
+
+  const [maze, setMaze] = useState<number[][]>(initialMaze);
 
   // console.log('xy確認', maze[1][3]);
 
@@ -50,8 +52,10 @@ const Home = () => {
   };
 
   const generation = () => {
-    const startCells = mazeGeneration_Odd();
     const updatedMaze = [...maze];
+
+    const startCells = mazeGeneration_Odd();
+
     for (const startCell of startCells) {
       const [y, x] = startCell;
 
@@ -69,6 +73,8 @@ const Home = () => {
     }
 
     setMaze(updatedMaze);
+    // setMaze(updatedMaze);
+
     console.log('迷路盤↓');
     console.table(maze);
     console.log('front');
@@ -132,6 +138,11 @@ const Home = () => {
   const moveHuman = () => {
     const { x, y, front } = human;
     const [dx, dy] = front;
+
+    if (x === maze.length - 1 && y === maze[0].length - 1) {
+      alert('goal!');
+      return;
+    }
 
     // 左に行く座標を計算
     let newFront: number[] = [0, 0];
